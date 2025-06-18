@@ -1,0 +1,47 @@
+security:
+    password_hashers:
+        # Automatically selects best hasher (bcrypt, argon2, etc.)
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    providers:
+        admin_provider:
+            entity:
+                class: App\Entity\Admin
+                property: email
+
+        technicien_provider:
+            entity:
+                class: App\Entity\Technicien
+                property: email
+
+        chain_provider:
+            chain:
+                providers:
+                    - admin_provider
+                    - technicien_provider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: chain_provider
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
+            entry_point: App\Security\LoginFormAuthenticator
+
+            logout:
+                path: app_logout
+                target: app_login
+
+    access_control:
+        # Admin area access
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+        # Technicien area access
+        - { path: ^/technicien, roles: ROLE_TECHNICIEN }
+
+        # Optional: Deny everything else if needed
+        # - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

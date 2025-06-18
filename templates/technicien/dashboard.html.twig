@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord - Technicien{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">Bienvenue, {{ app.user.nom }} {{ app.user.prenom }}</h2>
+        <p class="text-muted">Voici un aperçu rapide de vos responsabilités</p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-tools fa-3x text-primary bg-light rounded-circle p-3"></i>
+                    </div>
+                    <h5 class="card-title">Pannes Assignées</h5>
+                    <p class="fs-2 fw-bold">{{ total_pannes_assigned ?? 0 }}</p>
+                    <a href="{{ path('panne_index') }}" class="btn btn-outline-primary btn-sm">Voir les pannes</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-cogs fa-3x text-success bg-light rounded-circle p-3"></i>
+                    </div>
+                    <h5 class="card-title">Machines Actives</h5>
+                    <p class="fs-2 fw-bold">{{ total_active_machines ?? 0 }}</p>
+                    <a href="{{ path('technicien_machine_list') }}" class="btn btn-outline-success btn-sm">Voir les machines</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 Chart Section -->
+    <div class="row mt-5">
+        <div class="col-lg-6 offset-lg-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-center mb-4">Répartition des Pannes</h5>
+                    <canvas id="pannesChart" height="280"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('pannesChart').getContext('2d');
+        const pannesChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pannes Assignées', 'Machines Actives'],
+                datasets: [{
+                    label: 'Statistiques',
+                    data: [{{ total_pannes_assigned ?? 0 }}, {{ total_active_machines ?? 0 }}],
+                    backgroundColor: ['#0d6efd', '#198754'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 14 }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

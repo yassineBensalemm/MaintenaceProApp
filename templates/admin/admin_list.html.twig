@@ -1,0 +1,49 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Liste des Admins{% endblock %}
+
+{% block body %}
+<div class="pagetitle">
+    <h1>Liste des Administrateurs</h1>
+</div>
+
+<section class="section">
+    <div class="card">
+        <div class="card-body">
+            <table class="table datatable">
+                <thead>
+                    <tr>
+                  
+                        <th>Image de Profil</th>
+                        <th>Email</th>
+
+                        <th>Rôles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                        <tr>
+                          
+                            <td>
+                                <img src="{{ asset(admin.profileImage ?? 'assets/img/default-avatar.jpg') }}"
+                                     alt="Avatar" width="40" height="40" class="rounded-circle" style="object-fit: cover;">
+                            </td>
+                            <td>{{ admin.email }}</td>
+                     
+                            <td>
+                                {% for role in admin.roles %}
+                                    <span class="badge bg-secondary">{{ role }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Aucun administrateur trouvé.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
