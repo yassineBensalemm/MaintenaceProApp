@@ -11,7 +11,7 @@ use App\Security\LoginFormAuthenticator;
 class SecurityController extends AbstractController
 {
     public const AUTHENTICATION_ERROR = 'authentication_error';
-    #[Route(path: '/login', name: 'app_login')]
+    #[Route(path: '/', name: 'app_login')]
  
 public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
 {
